@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Lock by Relaxabit</title>
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --grid-bg: #1e2235;
+            --neon-blue: #00f2fe;
+            --neon-purple: #4facfe;
+            --text-color: #ffffff;
+            --gold: #ffd700;
+            --danger: #ff4757;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            margin: 5px 0;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #16192b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--neon-blue); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* The Game Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background-color: var(--grid-bg);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 320px;
+            height: 320px;
+            box-sizing: border-box;
+            transition: all 0.5s ease;
+        }
+
+        .grid.won {
+            box-shadow: 0 0 35px rgba(0, 242, 254, 0.6), 0 0 15px rgba(79, 172, 254, 0.4);
+            border: 2px solid var(--neon-blue);
+        }
+
+        .grid.lost {
+            box-shadow: 0 0 35px rgba(255, 71, 87, 0.6);
+            border: 2px solid var(--danger);
+        }
+
+        .tile {
+            background: linear-gradient(135deg, #23283d, #1a1d2e);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .tile:active { transform: scale(0.95); }
+        .tile.empty { background: transparent; border: 2px dashed rgba(255, 255, 255, 0.05); cursor: default; }
+        .tile.selected { border: 2px solid var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
+
+        .btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { opacity: 0.9; }
+        .btn-scramble { margin-top: 20px; background: linear-gradient(45deg, #2c3e50, #3498db); }
+        .btn-shop { background: linear-gradient(45deg, #f39c12, #e67e22); font-weight: bold; }
+
+        /* --- NOTIFICATION POPUP PANEL --- */
+        .modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: #1c2035;
+            border-radius: 16px;
+            padding: 25px;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal.open {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
+        .modal-title.win { color: var(--neon-blue); }
+        .modal-title.lose { color: var(--danger); }
+        .modal-text { font-size: 1rem; color: #ced6e0; margin-bottom: 20px; line-height: 1.4; }
+
+        /* --- PREMIUM SHOP SLIDE-UP MENU --- */
+        .shop-overlay {
+            position: fixed;
+            bottom: -100%; left: 0;
+            width: 100%; height: 80vh;
+            background-color: #131622;
+            border-top: 3px solid var(--gold);
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            z-index: 100;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .shop-overlay.open { bottom: 0; }
+        .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .shop-title { font-size: 1.5rem; font-weight: bold; color: var(--gold); letter-spacing: 1px; }
+        .close-shop { background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .shop-items-container { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex-grow: 1; padding-bottom: 20px; }
+        .shop-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .item-details { display: flex; flex-direction: column; gap: 4px; }
+        .item-name { font-weight: bold; font-size: 1.1rem; }
+        .item-desc { font-size: 0.85rem; color: #8a8f9f; }
+        .buy-btn { background: linear-gradient(45deg, var(--gold), #f39c12); color: #000; border: none; padding: 8px 16px; font-weight: bold; border-radius: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header-buttons">
+        <button class="btn btn-shop" id="open-shop-btn">🛒 Marketplace</button>
+    </div>
+
+    <h1>GRID LOCK</h1>
+    
+    <div class="stats-container">
+        <div class="stat-box">Moves: <span id="move-count">0</span> / 20</div>
+        <div class="stat-box">🔥 Streak: <span id="streak-count">34</span> Days</div>
+    </div>
+
+    <div class="toggle-container">
+        <span>Slide Challenge</span>
+        <label class="switch">
+            <input type="checkbox" id="mode-toggle" checked>
+            <span class="slider"></span>
+        </label>
+        <span>Zen Swap</span>
+    </div>
+
+    <div class="grid" id="game-grid"></div>
+
+    <button class="btn btn-scramble" id="reset-btn">Scramble Board</button>
+
+    <div class="modal" id="game-modal">
+        <div class="modal-title" id="modal-title">STATUS</div>
+        <div class="modal-text" id="modal-text">Message goes here.</div>
+        <button class="btn" onclick="closeModal()">Try Again</button>
+    </div>
+
+    <div class="shop-overlay" id="shop-menu">
+        <div class="shop-header">
+            <div class="shop-title">✨ EXCLUSIVE CUSTOMIZATIONS</div>
+            <button class="close-shop" id="close-shop-btn">✕</button>
+        </div>
+        <div class="shop-items-container">
+            <div class="shop-item">
+                <div class="item-details">
+                    <div class="item-name">🌌 Cosmic Rocket Skin Pack</div>
+                    <div class="item-desc">Turns your tile paths into custom 16-bit space textures with galaxy details.</div>
+                </div>
+                <button class="buy-btn" onclick="mockPurchase('Cosmic Rocket Skin Pack', '$1.99')">$1.99</button>
+            </div>
+            <div class="shop-item">
+                <div class="item-details">
+                    <div class="item-name">🍔 Retro Arcade Snack Bar</div>
+                    <div class="item-desc">Replaces numbers with animated burger, fry, and milkshake pixel graphics.</div>
+                </div>
+                <button class="buy-btn" onclick="mockPurchase('Retro Arcade Snack Bar Pack', '$2.49')">$2.49</button>
+            </div>
+            <div class="shop-item">
+                <div class="item-details">
+                    <div class="item-name">🛡️ Golden Streak Shield</div>
+                    <div class="item-desc">Forgot to play today? Automatically insulates and saves your active daily streak.</div>
+                </div>
+                <button class="buy-btn" onclick="mockPurchase('Golden Streak Shield', '$0.99')">$0.99</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gridElement = document.getElementById('game-grid');
+        const moveCountElement = document.getElementById('move-count');
+        const modeToggle = document.getElementById('mode-toggle');
+        const resetBtn = document.getElementById('reset-btn');
+        
+        // Modal & Shop Selectors
+        const gameModal = document.getElementById('game-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const shopMenu = document.getElementById('shop-menu');
+        const openShopBtn = document.getElementById('open-shop-btn');
+        const closeShopBtn = document.getElementById('close-shop-btn');
+
+        let tiles = [];
+        let moves = 0;
+        const maxMoves = 20;
+        let selectedTileIndex = null;
+        let gameOver = false;
+        let isZenMode = modeToggle.checked;
+
+        const roasts = [
+            "My grandma makes better moves. 👵💥",
+            "Are we solving a puzzle or just shuffling furniture? 💀",
+            "The logic left the chat 4 moves ago. 👁️👄👁️",
+            "Task failed successfully. Please exit the vehicle. 🚗",
+            "A for effort. Z for actual strategy. Let's try again. 😭",
+            "My math has calculated a massive logic gap here. 👀",
+            "The tiles are confused. I am confused. Everyone is confused. 🤔"
+        ];
+
+        function initGame() {
+            moves = 0;
+            gameOver = false;
+            selectedTileIndex = null;
+            moveCountElement.textContent = moves;
+            gridElement.className = 'grid'; 
+            closeModal();
+            
+            tiles = Array.from({length: 15}, (_, i) => i + 1);
+            tiles.push(isZenMode ? 16 : "");
+
+            scrambleTiles();
+            renderGrid();
+        }
+
+        function scrambleTiles() {
+            for (let i = tiles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+            }
+        }
+
+        function renderGrid() {
+            gridElement.innerHTML = '';
+            tiles.forEach((value, index) => {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+                if (value === "") {
+                    tile.classList.add('empty');
+                } else {
+                    tile.textContent = value;
+                }
+                if (index === selectedTileIndex) {
+                    tile.classList.add('selected');
+                }
+                tile.addEventListener('click', () => handleTileClick(index));
+                gridElement.appendChild(tile);
+            });
+        }
+
+        function handleTileClick(index) {
+            if (gameOver) return;
+
+            if (isZenMode) {
+                if (selectedTileIndex === null) {
+                    selectedTileIndex = index;
+                    renderGrid();
+                } else {
+                    if (selectedTileIndex !== index) {
+                        [tiles[selectedTileIndex], tiles[index]] = [tiles[index], tiles[selectedTileIndex]];
+                        trackMove();
+                    }
+                    selectedTileIndex = null;
+                    renderGrid();
+                    if (!gameOver) checkWinCondition();
+                }
+            } else {
+                const emptyIndex = tiles.indexOf("");
+                if (isAdjacent(index, emptyIndex)) {
+                    [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
+                    trackMove();
+                    renderGrid();
+                    if (!gameOver) checkWinCondition();
+                }
+            }
+        }
+
+        function trackMove() {
+            moves++;
+            moveCountElement.textContent = moves;
+            if (moves >= maxMoves) {
+                triggerLoss();
+            }
+        }
+
+        function isAdjacent(idx1, idx2) {
+            const row1 = Math.floor(idx1 / 4), col1 = idx1 % 4;
+            const row2 = Math.floor(idx2 / 4), col2 = idx2 % 4;
+            return (Math.abs(row1 - row2) + Math.abs(col1 - col2)) === 1;
+        }
+
+        function checkWinCondition() {
+            let winningSequence = true;
+            if (isZenMode) {
+                for (let i = 0; i < 16; i++) {
+                    if (tiles[i] !== i + 1) winningSequence = false;
+                }
+            } else {
+                for (let i = 0; i < 15; i++) {
+                    if (tiles[i] !== i + 1) winningSequence = false;
+                }
+                if (tiles[15] !== "") winningSequence = false;
+            }
+
+            if (winningSequence) {
+                gameOver = true;
+                gridElement.classList.add('won');
+                showModal("🎉 VICTORY!", "Pattern Matched! Daily Puzzle Cleared!", "win");
+            }
+        }
+
+        function triggerLoss() {
+            gameOver = true;
+            gridElement.classList.add('lost');
+            const randomRoast = roasts[Math.floor(Math.random() * roasts.length)];
+            showModal("❌ OUT OF MOVES", randomRoast, "lose");
+        }
+
+        function showModal(title, text, type) {
+            modalTitle.textContent = title;
+            modalTitle.className = `modal-title ${type}`;
+            modalText.textContent = text;
+            gameModal.classList.add('open');
+        }
+
+        function closeModal() {
+            gameModal.classList.remove('open');
+            if (gameOver && moves >= maxMoves) initGame();
+        }
+
+        openShopBtn.addEventListener('click', () => shopMenu.classList.add('open'));
+        closeShopBtn.addEventListener('click', () => shopMenu.classList.remove('open'));
+
+        function mockPurchase(itemName, price) {
+            alert(`💳 Opening secure web checkout portal for: ${itemName} (${price})`);
+        }
+
+        modeToggle.addEventListener('change', (e) => {
+            isZenMode = e.target.checked;
+            initGame();
+        });
+
+        resetBtn.addEventListener('click', initGame);
+        initGame();
+    </script>
+</body>
+</html>
