@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-color: #0f111a;
-            --grid-bg: #1e2235;
+            --grid-bg: #141724;
             --text-color: #ffffff;
             --gold: #ffd700;
             --danger: #ff4757;
@@ -16,6 +16,7 @@
             --neon-purple: #4facfe;
             --theme-glow: 0 0 10px #00f2fe, 0 0 20px #4facfe;
             --frame-border: 4px solid #1e2235;
+            --tile-base: #1e2235;
         }
 
         /* Spring Equinox Earth New Year Theme */
@@ -161,39 +162,79 @@
         #board {
             display: grid;
             background-color: var(--grid-bg);
-            padding: 10px;
-            border-radius: 12px;
-            gap: 10px;
+            padding: 12px;
+            border-radius: 14px;
+            gap: 12px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
         }
 
+        /* 💎 PREMIUM 3D METALLIC BEVEL TILE STYLING 💎 */
         .tile {
-            background: linear-gradient(135deg, rgba(30, 34, 53, 0.9), rgba(15, 17, 26, 0.9));
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-color);
-            font-size: 24px;
-            font-weight: bold;
+            position: relative;
+            background: 
+                linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.4) 100%),
+                linear-gradient(to bottom, #2d334d, #161924);
+            border: 1px solid #3b4263;
+            /* Creates the internal beveled facet shadows mimicking image_14 */
+            box-shadow: 
+                inset 0 4px 5px rgba(255,255,255,0.2), 
+                inset 0 -4px 5px rgba(0,0,0,0.5),
+                inset 4px 0 5px rgba(255,255,255,0.05),
+                inset -4px 0 5px rgba(0,0,0,0.5),
+                0 6px 10px rgba(0, 0, 0, 0.5);
+            color: #b0b7db;
+            font-size: 26px;
+            font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
             user-select: none;
-            box-shadow: inset 0 0 8px rgba(255,255,255,0.05), 0 4px 6px rgba(0,0,0,0.3);
-            transition: transform 0.1s, box-shadow 0.2s;
+            transition: transform 0.05s, box-shadow 0.2s, color 0.2s;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
-        /* Solved/Correct Position Visual Accent */
+        /* Diagonal Bevel lines simulation */
+        .tile::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 5px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 100%);
+            pointer-events: none;
+        }
+
+        /* Active click squeeze effect */
+        .tile:active {
+            transform: scale(0.95);
+            box-shadow: 
+                inset 0 2px 3px rgba(0,0,0,0.6),
+                0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Correctly Solved Position - Explodes with crystal neon color matching theme */
         .tile.correct-pos {
+            color: #ffffff;
+            background: 
+                linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(0,0,0,0) 60%),
+                linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
             border-color: var(--neon-blue);
-            box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.2), 0 0 8px var(--neon-blue);
+            text-shadow: 0 0 8px rgba(255,255,255,0.8), 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 
+                inset 0 4px 6px rgba(255,255,255,0.4),
+                inset 0 -4px 6px rgba(0,0,0,0.4),
+                0 0 15px var(--neon-blue);
         }
 
         .tile.empty {
             background: transparent;
-            border: 2px dashed rgba(255, 255, 255, 0.05);
-            box-shadow: none;
+            border: 2px dashed rgba(255, 255, 255, 0.04);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             cursor: default;
         }
+        
+        .tile.empty::before { display: none; }
 
         .scramble-btn {
             background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
@@ -240,7 +281,6 @@
             font-size: 24px; color: #888; cursor: pointer;
         }
 
-        /* Visual Table Layout for Rules */
         .example-table {
             width: 120px; margin: 15px auto;
             border-collapse: collapse;
@@ -253,13 +293,13 @@
         .td-empty { background: rgba(255,255,255,0.05); border-style: dashed !important; }
     </style>
 </head>
-<body class="theme-spring">
+<body class="theme-winter">
 
     <div class="header-controls">
         <select id="themeSelect" onchange="changeTheme(this.value)">
+            <option value="theme-winter">❄️ Winter</option>
             <option value="theme-spring">🌸 Earth NY</option>
             <option value="theme-halloween">🎃 Halloween</option>
-            <option value="theme-winter">❄️ Winter</option>
         </select>
         <button class="btn-help" onclick="toggleModal('rulesModal', true)">How to Play ❓</button>
     </div>
@@ -337,7 +377,6 @@
             "Even with my bifocals, I can see a hundred better moves than the ones you just made. 👓🔥"
         ];
 
-        // Sync local storage memory for Streak tracking
         if(localStorage.getItem('gridLockStreak')) {
             streak = parseInt(localStorage.getItem('gridLockStreak'));
             document.getElementById('streakCount').innerText = streak;
@@ -365,7 +404,7 @@
             board = [];
             let totalTiles = size * size;
             for (let i = 1; i < totalTiles; i++) board.push(i);
-            board.push(0); // 0 acts as empty slot
+            board.push(0);
         }
 
         function renderBoard() {
@@ -373,7 +412,6 @@
             boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
             boardEl.innerHTML = '';
 
-            // Dynamically scale tile dimensions based on difficulty sizes
             let tileSize = size === 3 ? '85px' : (size === 4 ? '68px' : '54px');
 
             board.forEach((val, index) => {
@@ -387,7 +425,6 @@
                     tile.className = 'tile';
                     tile.innerText = val;
                     
-                    // Add bright accent ring if it rests in its exact mathematically solved spot
                     if (val === index + 1) {
                         tile.classList.add('correct-pos');
                     }
@@ -426,20 +463,17 @@
             initBoard();
             movesLeft = totalMovesAllowed;
             
-            // Standard puzzle scrambling script
             for (let i = board.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [board[i], board[j]] = [board[j], board[i]];
             }
             
-            // Ensure empty tile isn't locked up instantly
             if (board.indexOf(0) === -1) board[board.length - 1] = 0;
             
             renderBoard();
         }
 
         function checkGameStatus() {
-            // Check win condition
             let isWin = true;
             for (let i = 0; i < board.length - 1; i++) {
                 if (board[i] !== i + 1) { isWin = false; break; }
@@ -455,7 +489,6 @@
                 document.getElementById('statusMessage').innerText = "Incredible pathing! An energy pulse surges across your grid circuit. You saved yourself from a roasting today!";
                 toggleModal('statusModal', true);
             } 
-            // Out of moves loss condition
             else if (movesLeft === 0) {
                 streak = 0;
                 localStorage.setItem('gridLockStreak', 0);
@@ -475,7 +508,6 @@
             scrambleBoard();
         }
 
-        // Start game on boot
         scrambleBoard();
     </script>
 </body>
