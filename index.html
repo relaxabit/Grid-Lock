@@ -8,441 +8,475 @@
         :root {
             --bg-color: #0f111a;
             --grid-bg: #1e2235;
-            --neon-blue: #00f2fe;
-            --neon-purple: #4facfe;
             --text-color: #ffffff;
             --gold: #ffd700;
             --danger: #ff4757;
+            /* Neon Themes */
+            --neon-blue: #00f2fe;
+            --neon-purple: #4facfe;
+            --theme-glow: 0 0 10px #00f2fe, 0 0 20px #4facfe;
+            --frame-border: 4px solid #1e2235;
+        }
+
+        /* Spring Equinox Earth New Year Theme */
+        .theme-spring {
+            --neon-blue: #39ff14;
+            --neon-purple: #00ff87;
+            --theme-glow: 0 0 12px #39ff14, 0 0 25px #00ff87;
+            --frame-border: 4px dashed #39ff14;
+        }
+
+        /* Spooky Halloween Theme */
+        .theme-halloween {
+            --neon-blue: #ff6700;
+            --neon-purple: #9400d3;
+            --theme-glow: 0 0 12px #ff6700, 0 0 25px #9400d3;
+            --frame-border: 4px double #ff6700;
+        }
+
+        /* Winter Solstice Theme */
+        .theme-winter {
+            --neon-blue: #00ffffff;
+            --neon-purple: #ff007f;
+            --theme-glow: 0 0 12px #00ffffff, 0 0 25px #ff007f;
+            --frame-border: 4px solid #00ffffff;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 10px;
-            position: relative;
-            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .header-controls {
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        select, .btn-help {
+            background: #1e2235;
+            color: white;
+            border: 1px solid var(--neon-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .marketplace-btn {
+            background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(255, 159, 67, 0.4);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         h1 {
-            margin: 5px 0;
+            color: var(--neon-blue);
+            text-shadow: var(--theme-glow);
+            margin: 5px 0 15px 0;
+            font-size: 32px;
             letter-spacing: 2px;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
         .stats-container {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 15px;
-            font-size: 1.1rem;
+            width: 100%;
+            max-width: 380px;
         }
 
         .stat-box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex: 1;
+            background: rgba(30, 34, 53, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
         }
 
-        .toggle-container {
-            margin-bottom: 20px;
+        /* Difficulty Toggle Bar */
+        .diff-container {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #16192b;
-            padding: 5px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333;
-            transition: .3s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider { background-color: var(--neon-blue); }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        /* The Game Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            background-color: var(--grid-bg);
-            padding: 15px;
-            border-radius: 16px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            width: 320px;
-            height: 320px;
+            background: #1e2235;
+            padding: 4px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 380px;
             box-sizing: border-box;
-            transition: all 0.5s ease;
         }
 
-        .grid.won {
-            box-shadow: 0 0 35px rgba(0, 242, 254, 0.6), 0 0 15px rgba(79, 172, 254, 0.4);
-            border: 2px solid var(--neon-blue);
+        .diff-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 8px 0;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
         }
 
-        .grid.lost {
-            box-shadow: 0 0 35px rgba(255, 71, 87, 0.6);
-            border: 2px solid var(--danger);
+        .diff-btn.active {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            box-shadow: var(--theme-glow);
+        }
+
+        /* Outer Frame Layout */
+        .board-frame {
+            border: var(--frame-border);
+            box-shadow: var(--theme-glow);
+            padding: 12px;
+            border-radius: 20px;
+            background: rgba(15, 17, 26, 0.8);
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        #board {
+            display: grid;
+            background-color: var(--grid-bg);
+            padding: 10px;
+            border-radius: 12px;
+            gap: 10px;
         }
 
         .tile {
-            background: linear-gradient(135deg, #23283d, #1a1d2e);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(30, 34, 53, 0.9), rgba(15, 17, 26, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-color);
+            font-size: 24px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
+            border-radius: 10px;
             cursor: pointer;
             user-select: none;
-            transition: transform 0.1s, background 0.2s;
+            box-shadow: inset 0 0 8px rgba(255,255,255,0.05), 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s, box-shadow 0.2s;
         }
 
-        .tile:active { transform: scale(0.95); }
-        .tile.empty { background: transparent; border: 2px dashed rgba(255, 255, 255, 0.05); cursor: default; }
-        .tile.selected { border: 2px solid var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
+        /* Solved/Correct Position Visual Accent */
+        .tile.correct-pos {
+            border-color: var(--neon-blue);
+            box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.2), 0 0 8px var(--neon-blue);
+        }
 
-        .btn {
-            background: #2c3e50;
+        .tile.empty {
+            background: transparent;
+            border: 2px dashed rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .scramble-btn {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 8px;
+            padding: 12px 35px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 25px;
             cursor: pointer;
+            box-shadow: var(--theme-glow);
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: background 0.2s;
         }
 
-        .btn:hover { opacity: 0.9; }
-        .btn-scramble { margin-top: 20px; background: linear-gradient(45deg, #2c3e50, #3498db); }
-        .btn-shop { background: linear-gradient(45deg, #f39c12, #e67e22); font-weight: bold; }
-
-        /* --- NOTIFICATION POPUP PANEL --- */
+        /* Overlay Modals for How to Play & Game Over */
         .modal {
+            display: none;
             position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: #1c2035;
-            border-radius: 16px;
-            padding: 25px;
-            width: 280px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            z-index: 200;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .modal.open {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
-        .modal-title.win { color: var(--neon-blue); }
-        .modal-title.lose { color: var(--danger); }
-        .modal-text { font-size: 1rem; color: #ced6e0; margin-bottom: 20px; line-height: 1.4; }
-
-        /* --- PREMIUM SHOP SLIDE-UP MENU --- */
-        .shop-overlay {
-            position: fixed;
-            bottom: -100%; left: 0;
-            width: 100%; height: 80vh;
-            background-color: #131622;
-            border-top: 3px solid var(--gold);
-            border-radius: 24px 24px 0 0;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            z-index: 100;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 17, 26, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
         }
-        .shop-overlay.open { bottom: 0; }
-        .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-        .shop-title { font-size: 1.5rem; font-weight: bold; color: var(--gold); letter-spacing: 1px; }
-        .close-shop { background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
-        .shop-items-container { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex-grow: 1; padding-bottom: 20px; }
-        .shop-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .item-details { display: flex; flex-direction: column; gap: 4px; }
-        .item-name { font-weight: bold; font-size: 1.1rem; }
-        .item-desc { font-size: 0.85rem; color: #8a8f9f; }
-        .buy-btn { background: linear-gradient(45deg, var(--gold), #f39c12); color: #000; border: none; padding: 8px 16px; font-weight: bold; border-radius: 20px; cursor: pointer; }
+
+        .modal-content {
+            background: #1e2235;
+            border: 2px solid var(--neon-blue);
+            box-shadow: var(--theme-glow);
+            padding: 25px;
+            border-radius: 20px;
+            max-width: 340px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 24px; color: #888; cursor: pointer;
+        }
+
+        /* Visual Table Layout for Rules */
+        .example-table {
+            width: 120px; margin: 15px auto;
+            border-collapse: collapse;
+        }
+        .example-table td {
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 35px; height: 35px; text-align: center;
+            font-weight: bold; font-size: 14px;
+        }
+        .td-empty { background: rgba(255,255,255,0.05); border-style: dashed !important; }
     </style>
 </head>
-<body>
+<body class="theme-spring">
 
-    <div class="header-buttons">
-        <button class="btn btn-shop" id="open-shop-btn">🛒 Marketplace</button>
+    <div class="header-controls">
+        <select id="themeSelect" onchange="changeTheme(this.value)">
+            <option value="theme-spring">🌸 Earth NY</option>
+            <option value="theme-halloween">🎃 Halloween</option>
+            <option value="theme-winter">❄️ Winter</option>
+        </select>
+        <button class="btn-help" onclick="toggleModal('rulesModal', true)">How to Play ❓</button>
     </div>
 
-    <h1>GRID LOCK</h1>
-    
+    <button class="marketplace-btn">🛒 Marketplace</button>
+    <h1>Grid Lock</h1>
+
     <div class="stats-container">
-        <div class="stat-box">Moves: <span id="move-count">0</span> / 20</div>
-        <div class="stat-box">🔥 Streak: <span id="streak-count">34</span> Days</div>
+        <div class="stat-box" id="moveBox">Moves: <span id="moveCount">20</span> / <span id="maxMoves">20</span></div>
+        <div class="stat-box">🔥 Streak: <span id="streakCount">0</span> Days</div>
     </div>
 
-    <div class="toggle-container">
-        <span>Slide Challenge</span>
-        <label class="switch">
-            <input type="checkbox" id="mode-toggle" checked>
-            <span class="slider"></span>
-        </label>
-        <span>Zen Swap</span>
+    <!-- Difficulty Toggles -->
+    <div class="diff-container">
+        <button class="diff-btn" id="diff3" onclick="setDifficulty(3)">Easy (3x3)</button>
+        <button class="diff-btn active" id="diff4" onclick="setDifficulty(4)">Mid (4x4)</button>
+        <button class="diff-btn" id="diff5" onclick="setDifficulty(5)">Hard (5x5)</button>
     </div>
 
-    <div class="grid" id="game-grid"></div>
-
-    <button class="btn btn-scramble" id="reset-btn">Scramble Board</button>
-
-    <div class="modal" id="game-modal">
-        <div class="modal-title" id="modal-title">STATUS</div>
-        <div class="modal-text" id="modal-text">Message goes here.</div>
-        <button class="btn" onclick="closeModal()">Try Again</button>
+    <!-- Outer Frame for Seasonal Highlights -->
+    <div class="board-frame" id="frame">
+        <div id="board"></div>
     </div>
 
-    <div class="shop-overlay" id="shop-menu">
-        <div class="shop-header">
-            <div class="shop-title">✨ EXCLUSIVE CUSTOMIZATIONS</div>
-            <button class="close-shop" id="close-shop-btn">✕</button>
-        </div>
-        <div class="shop-items-container">
-            <div class="shop-item">
-                <div class="item-details">
-                    <div class="item-name">🌌 Cosmic Rocket Skin Pack</div>
-                    <div class="item-desc">Turns your tile paths into custom 16-bit space textures with galaxy details.</div>
+    <button class="scramble-btn" onclick="scrambleBoard()">Scramble Board</button>
+
+    <!-- Modal: Rules Box -->
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="toggleModal('rulesModal', false)">&times;</span>
+            <h3 style="color:var(--neon-blue); margin-top:0;">How To Play</h3>
+            <p style="font-size:14px; line-height:1.5; color:#ccc;">Slide tiles into adjacent empty spaces. Arrange all numbers into ascending order from top-left to win!</p>
+            
+            <div style="display:flex; justify-content:center; gap:20px; align-items:center;">
+                <div>
+                    <span style="font-size:11px; color:#888;">Slide 1 Down</span>
+                    <table class="example-table">
+                        <tr><td>3</td><td class="td-empty"></td></tr>
+                        <tr><td>2</td><td>1</td></tr>
+                    </table>
                 </div>
-                <button class="buy-btn" onclick="mockPurchase('Cosmic Rocket Skin Pack', '$1.99')">$1.99</button>
-            </div>
-            <div class="shop-item">
-                <div class="item-details">
-                    <div class="item-name">🍔 Retro Arcade Snack Bar</div>
-                    <div class="item-desc">Replaces numbers with animated burger, fry, and milkshake pixel graphics.</div>
+                <div style="font-size:20px; color:var(--neon-blue);">➔</div>
+                <div>
+                    <span style="font-size:11px; color:#888;">Solved Grid</span>
+                    <table class="example-table" style="border: 1px solid var(--neon-blue);">
+                        <tr><td>1</td><td>2</td></tr>
+                        <tr><td>3</td><td class="td-empty"></td></tr>
+                    </table>
                 </div>
-                <button class="buy-btn" onclick="mockPurchase('Retro Arcade Snack Bar Pack', '$2.49')">$2.49</button>
-            </div>
-            <div class="shop-item">
-                <div class="item-details">
-                    <div class="item-name">🛡️ Golden Streak Shield</div>
-                    <div class="item-desc">Forgot to play today? Automatically insulates and saves your active daily streak.</div>
-                </div>
-                <button class="buy-btn" onclick="mockPurchase('Golden Streak Shield', '$0.99')">$0.99</button>
             </div>
         </div>
     </div>
 
-    <script>
-        const gridElement = document.getElementById('game-grid');
-        const moveCountElement = document.getElementById('move-count');
-        const modeToggle = document.getElementById('mode-toggle');
-        const resetBtn = document.getElementById('reset-btn');
-        
-        // Modal & Shop Selectors
-        const gameModal = document.getElementById('game-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalText = document.getElementById('modal-text');
-        const shopMenu = document.getElementById('shop-menu');
-        const openShopBtn = document.getElementById('open-shop-btn');
-        const closeShopBtn = document.getElementById('close-shop-btn');
+    <!-- Modal: Grandma Alert / Game Status -->
+    <div id="statusModal" class="modal">
+        <div class="modal-content">
+            <h3 id="statusTitle" style="margin-top:0; font-size:24px;"></h3>
+            <p id="statusMessage" style="font-size:15px; line-height:1.6; color:#eee; margin:15px 0;"></p>
+            <button class="scramble-btn" onclick="closeStatusAndReset()">Try Again</button>
+        </div>
+    </div>
 
-        let tiles = [];
-        let moves = 0;
-        const maxMoves = 20;
-        let selectedTileIndex = null;
-        let gameOver = false;
-        let isZenMode = modeToggle.checked;
+    <script {nonce-placeholder}>
+        let size = 4; 
+        let board = [];
+        let movesLeft = 20;
+        let totalMovesAllowed = 20;
+        let streak = 0;
 
         const roasts = [
-            "My grandma makes better moves. 👵💥",
-            "Are we solving a puzzle or just shuffling furniture? 💀",
-            "The logic left the chat 4 moves ago. 👁️👄👁️",
-            "Task failed successfully. Please exit the vehicle. 🚗",
-            "A for effort. Z for actual strategy. Let's try again. 😭",
-            "My math has calculated a massive logic gap here. 👀",
-            "The tiles are confused. I am confused. Everyone is confused. 🤔"
+            "I’ve seen tectonic plates move faster than your brain cells right now. Try again, sweetie. 👵💥",
+            "Bless your heart, but your strategy is dryer than my Sunday pot roast. Scramble it and try again! 🍲❌",
+            "Twenty moves and you couldn't even sort a single row? I raised your parents better than this. 🙄💨",
+            "Are your eyes locked or is the grid locked? Because that layout is an absolute mess! 🔍👀",
+            "Even with my bifocals, I can see a hundred better moves than the ones you just made. 👓🔥"
         ];
 
-        function initGame() {
-            moves = 0;
-            gameOver = false;
-            selectedTileIndex = null;
-            moveCountElement.textContent = moves;
-            gridElement.className = 'grid'; 
-            closeModal();
+        // Sync local storage memory for Streak tracking
+        if(localStorage.getItem('gridLockStreak')) {
+            streak = parseInt(localStorage.getItem('gridLockStreak'));
+            document.getElementById('streakCount').innerText = streak;
+        }
+
+        function changeTheme(themeName) {
+            document.body.className = themeName;
+        }
+
+        function toggleModal(id, show) {
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
+        }
+
+        function setDifficulty(newSize) {
+            size = newSize;
+            totalMovesAllowed = size === 3 ? 15 : (size === 4 ? 20 : 35);
             
-            tiles = Array.from({length: 15}, (_, i) => i + 1);
-            tiles.push(isZenMode ? 16 : "");
-
-            scrambleTiles();
-            renderGrid();
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('diff' + size).classList.add('active');
+            
+            scrambleBoard();
         }
 
-        function scrambleTiles() {
-            for (let i = tiles.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
-            }
+        function initBoard() {
+            board = [];
+            let totalTiles = size * size;
+            for (let i = 1; i < totalTiles; i++) board.push(i);
+            board.push(0); // 0 acts as empty slot
         }
 
-        function renderGrid() {
-            gridElement.innerHTML = '';
-            tiles.forEach((value, index) => {
+        function renderBoard() {
+            const boardEl = document.getElementById('board');
+            boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+            boardEl.innerHTML = '';
+
+            // Dynamically scale tile dimensions based on difficulty sizes
+            let tileSize = size === 3 ? '85px' : (size === 4 ? '68px' : '54px');
+
+            board.forEach((val, index) => {
                 const tile = document.createElement('div');
-                tile.classList.add('tile');
-                if (value === "") {
-                    tile.classList.add('empty');
+                tile.style.width = tileSize;
+                tile.style.height = tileSize;
+                
+                if (val === 0) {
+                    tile.className = 'tile empty';
                 } else {
-                    tile.textContent = value;
-                }
-                if (index === selectedTileIndex) {
-                    tile.classList.add('selected');
-                }
-                tile.addEventListener('click', () => handleTileClick(index));
-                gridElement.appendChild(tile);
-            });
-        }
-
-        function handleTileClick(index) {
-            if (gameOver) return;
-
-            if (isZenMode) {
-                if (selectedTileIndex === null) {
-                    selectedTileIndex = index;
-                    renderGrid();
-                } else {
-                    if (selectedTileIndex !== index) {
-                        [tiles[selectedTileIndex], tiles[index]] = [tiles[index], tiles[selectedTileIndex]];
-                        trackMove();
+                    tile.className = 'tile';
+                    tile.innerText = val;
+                    
+                    // Add bright accent ring if it rests in its exact mathematically solved spot
+                    if (val === index + 1) {
+                        tile.classList.add('correct-pos');
                     }
-                    selectedTileIndex = null;
-                    renderGrid();
-                    if (!gameOver) checkWinCondition();
+
+                    tile.onclick = () => moveTile(index);
                 }
-            } else {
-                const emptyIndex = tiles.indexOf("");
-                if (isAdjacent(index, emptyIndex)) {
-                    [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
-                    trackMove();
-                    renderGrid();
-                    if (!gameOver) checkWinCondition();
-                }
+                boardEl.appendChild(tile);
+            });
+
+            document.getElementById('moveCount').innerText = movesLeft;
+            document.getElementById('maxMoves').innerText = totalMovesAllowed;
+        }
+
+        function moveTile(index) {
+            if (movesLeft <= 0) return;
+
+            const emptyIndex = board.indexOf(0);
+            const row = Math.floor(index / size);
+            const col = index % size;
+            const empRow = Math.floor(emptyIndex / size);
+            const empCol = emptyIndex % size;
+
+            const isAdjacent = (Math.abs(row - empRow) + Math.abs(col - empCol)) === 1;
+
+            if (isAdjacent) {
+                board[emptyIndex] = board[index];
+                board[index] = 0;
+                movesLeft--;
+                
+                renderBoard();
+                checkGameStatus();
             }
         }
 
-        function trackMove() {
-            moves++;
-            moveCountElement.textContent = moves;
-            if (moves >= maxMoves) {
-                triggerLoss();
+        function scrambleBoard() {
+            initBoard();
+            movesLeft = totalMovesAllowed;
+            
+            // Standard puzzle scrambling script
+            for (let i = board.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [board[i], board[j]] = [board[j], board[i]];
+            }
+            
+            // Ensure empty tile isn't locked up instantly
+            if (board.indexOf(0) === -1) board[board.length - 1] = 0;
+            
+            renderBoard();
+        }
+
+        function checkGameStatus() {
+            // Check win condition
+            let isWin = true;
+            for (let i = 0; i < board.length - 1; i++) {
+                if (board[i] !== i + 1) { isWin = false; break; }
+            }
+
+            if (isWin && board[board.length - 1] === 0) {
+                streak++;
+                localStorage.setItem('gridLockStreak', streak);
+                document.getElementById('streakCount').innerText = streak;
+                
+                document.getElementById('statusTitle').innerText = "✨ AURA UNLOCKED! ✨";
+                document.getElementById('statusTitle').style.color = "var(--neon-blue)";
+                document.getElementById('statusMessage').innerText = "Incredible pathing! An energy pulse surges across your grid circuit. You saved yourself from a roasting today!";
+                toggleModal('statusModal', true);
+            } 
+            // Out of moves loss condition
+            else if (movesLeft === 0) {
+                streak = 0;
+                localStorage.setItem('gridLockStreak', 0);
+                document.getElementById('streakCount').innerText = 0;
+
+                let randomRoast = roasts[Math.floor(Math.random() * roasts.length)];
+                
+                document.getElementById('statusTitle').innerText = "👵 Grandma Says:";
+                document.getElementById('statusTitle').style.color = "var(--danger)";
+                document.getElementById('statusMessage').innerText = randomRoast;
+                toggleModal('statusModal', true);
             }
         }
 
-        function isAdjacent(idx1, idx2) {
-            const row1 = Math.floor(idx1 / 4), col1 = idx1 % 4;
-            const row2 = Math.floor(idx2 / 4), col2 = idx2 % 4;
-            return (Math.abs(row1 - row2) + Math.abs(col1 - col2)) === 1;
+        function closeStatusAndReset() {
+            toggleModal('statusModal', false);
+            scrambleBoard();
         }
 
-        function checkWinCondition() {
-            let winningSequence = true;
-            if (isZenMode) {
-                for (let i = 0; i < 16; i++) {
-                    if (tiles[i] !== i + 1) winningSequence = false;
-                }
-            } else {
-                for (let i = 0; i < 15; i++) {
-                    if (tiles[i] !== i + 1) winningSequence = false;
-                }
-                if (tiles[15] !== "") winningSequence = false;
-            }
-
-            if (winningSequence) {
-                gameOver = true;
-                gridElement.classList.add('won');
-                showModal("🎉 VICTORY!", "Pattern Matched! Daily Puzzle Cleared!", "win");
-            }
-        }
-
-        function triggerLoss() {
-            gameOver = true;
-            gridElement.classList.add('lost');
-            const randomRoast = roasts[Math.floor(Math.random() * roasts.length)];
-            showModal("❌ OUT OF MOVES", randomRoast, "lose");
-        }
-
-        function showModal(title, text, type) {
-            modalTitle.textContent = title;
-            modalTitle.className = `modal-title ${type}`;
-            modalText.textContent = text;
-            gameModal.classList.add('open');
-        }
-
-        function closeModal() {
-            gameModal.classList.remove('open');
-            if (gameOver && moves >= maxMoves) initGame();
-        }
-
-        openShopBtn.addEventListener('click', () => shopMenu.classList.add('open'));
-        closeShopBtn.addEventListener('click', () => shopMenu.classList.remove('open'));
-
-        function mockPurchase(itemName, price) {
-            alert(`💳 Opening secure web checkout portal for: ${itemName} (${price})`);
-        }
-
-        modeToggle.addEventListener('change', (e) => {
-            isZenMode = e.target.checked;
-            initGame();
-        });
-
-        resetBtn.addEventListener('click', initGame);
-        initGame();
+        // Start game on boot
+        scrambleBoard();
     </script>
 </body>
 </html>
